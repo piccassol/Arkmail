@@ -56,3 +56,27 @@ Backend: FastAPI
 AI: OpenAI (GPT-4-turbo)
 
 Email Automation: Mailchimp
+
+Git Workflow
+
+Commit and push your changes clearly:
+
+git add .
+git commit -m "🚢 Clear description of changes"
+git push origin main
+
+✅ Current Features:
+
+Automated email generation via AI
+
+Mailchimp integration for newsletter automation
+
+FastAPI backend for scalability
+
+🚢 Upcoming Improvements:
+
+CRM Integration
+
+Enhanced personalization using user data
+
+Advanced email analytics and monitoring
