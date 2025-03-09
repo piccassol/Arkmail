@@ -1,16 +1,29 @@
-# src/main.py
 from fastapi import FastAPI
-from utils import generate_email, create_and_send_campaign
+from fastapi.middleware.cors import CORSMiddleware
+from .database import engine, Base
+from .routers import auth, emails, newsletters, analytics
+from .config import settings
 
-app = FastAPI()
+# Create database tables
+Base.metadata.create_all(bind=engine)
+
+app = FastAPI(title=settings.APP_NAME)
+
+# CORS settings for Vercel frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with frontend URL in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Include routers
+app.include_router(auth.router)
+app.include_router(emails.router)
+app.include_router(newsletters.router)
+app.include_router(analytics.router)
 
 @app.get("/")
-async def root():
-    return {"message": "🚢 AI Email Agent Ready!"}
-
-@app.post("/send-newsletter")
-async def send_newsletter(topic: str):
-    prompt = f"Compose a professional newsletter about: {topic}"
-    newsletter_content = generate_email(prompt)
-    create_and_send_campaign(subject=topic, content_html=newsletter_content)
-    return {"status": "🚢 Newsletter successfully sent!"}
+def read_root():
+    return {"message": "PDGmail API Running"}
