@@ -1,18 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, Base  # Removed "src." to match Render's directory structure
-from routers import auth, emails, newsletters, analytics
-from config import settings
+from src.database import engine, Base
+from src.routers import auth, emails, newsletters, analytics
+from src.config import settings  # Ensure `config.py` is inside `src/`
 
 # Create database tables
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.APP_NAME)
 
-# CORS settings for Vercel frontend
+# CORS settings for frontend connection
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Change to specific frontend URL in production
+    allow_origins=["*"],  # Update with specific frontend URL in production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
