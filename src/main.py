@@ -1,16 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .database import engine, Base
-from .routers import auth, emails, newsletters, analytics
-from .config import settings
+from src.database import engine, Base
+from src.routers import auth, emails, newsletters, analytics
+from src.config import settings
 
-# Ensure database tables are created
+# Create database tables
 Base.metadata.create_all(bind=engine)
 
-# Initialize FastAPI app
-app = FastAPI(title="PDGmail API")
+app = FastAPI(title=settings.APP_NAME)
 
-# CORS settings for frontend communication
+# CORS settings for Vercel frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Replace with frontend URL in production
@@ -27,9 +26,4 @@ app.include_router(analytics.router)
 
 @app.get("/")
 def read_root():
-    return {"message": "PDGmail API is running on Render"}
-
-# Health check endpoint for deployment debugging
-@app.get("/health")
-def health_check():
-    return {"status": "healthy", "message": "Backend is live!"}
+    return {"message": "PDGmail API Running"}
