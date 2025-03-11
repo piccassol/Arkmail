@@ -3,29 +3,18 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     APP_NAME: str = "PDGmail API"
-    
-    # Database Connection
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://user:password@localhost:5432/pdgmail")
-    
-    # JWT Authentication
+    DATABASE_URL: str = os.getenv("DATABASE_URL")
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key")
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 30))
 
-    # Mailchimp API (if using for emails)
-    MAILCHIMP_API_KEY: str = os.getenv("MAILCHIMP_API_KEY", "")
-    MAILCHIMP_SERVER_PREFIX: str = os.getenv("MAILCHIMP_SERVER_PREFIX", "")
-
-    # SMTP Settings (for sending emails)
+    # Email Settings (Update if using Mailchimp)
     SMTP_SERVER: str = os.getenv("SMTP_SERVER", "smtp.gmail.com")
-    SMTP_PORT: int = int(os.getenv("SMTP_PORT", "587"))
-    SMTP_USERNAME: str = os.getenv("SMTP_USERNAME", "")
-    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "")
-
-    # Redis for Celery (if needed for background tasks)
-    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
+    SMTP_PORT: int = int(os.getenv("SMTP_PORT", 587))
+    SMTP_USERNAME: str = os.getenv("SMTP_USERNAME", "your-email@gmail.com")
+    SMTP_PASSWORD: str = os.getenv("SMTP_PASSWORD", "your-app-password")
 
     class Config:
-        env_file = ".env"  # Load environment variables from .env file
+        env_file = ".env"
 
 settings = Settings()
