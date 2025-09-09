@@ -59,13 +59,7 @@ Email Automation: Mailchimp
 
 Git Workflow
 
-Commit and push your changes clearly:
-
-git add .
-git commit -m "🚢 Clear description of changes"
-git push origin main
-
-✅ Current Features:
+ Current Features:
 
 Automated email generation via AI
 
@@ -73,7 +67,7 @@ Mailchimp integration for newsletter automation
 
 FastAPI backend for scalability
 
-🚢 Upcoming Improvements:
+ Upcoming Improvements:
 
 CRM Integration
 
