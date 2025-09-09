@@ -1,31 +1,38 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..database import get_db
-from ..models.user import User
-from ..schemas.newsletter import NewsletterCreate, NewsletterResponse
-from ..services.newsletter_service import create_newsletter, send_newsletter
-from ..utils.auth import get_current_active_user
+from src.database import get_db
+from src.schemas.newsletter import NewsletterCreate, NewsletterResponse
+from src.models.user import User
+from src.services.newsletter_service import send_newsletter
+from src.utils.auth import get_current_user
 
 router = APIRouter(
     prefix="/newsletters",
-    tags=["newsletters"],
-    dependencies=[Depends(get_current_active_user)]
+    tags=["newsletters"]
 )
 
-@router.post("/", response_model=NewsletterResponse)
-def create_new_newsletter(
+
+@router.post("/send", response_model=NewsletterResponse)
+def send_newsletter_route(
     newsletter: NewsletterCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
+    current_user: User = Depends(get_current_user)
 ):
-    return create_newsletter(db, newsletter.name, current_user.id, newsletter.description)
-
-@router.post("/{newsletter_id}/send")
-async def send_newsletter_issue(
-    newsletter_id: int,
-    background_tasks: BackgroundTasks,
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_active_user)
-):
-    background_tasks.add_task(send_newsletter, db, newsletter_id)
-    return {"message": "Newsletter is being sent"}
+    """
+    Send a newsletter using Mailchimp and log it in the database.
+    """
+    try:
+        result = send_newsletter(
+            db=db,
+            owner_id=current_user.id,
+            title=newsletter.title,
+            content=newsletter.content,
+        )
+        return NewsletterResponse(
+            id=result["newsletter_id"],
+            title=newsletter.title,
+            content=newsletter.content,
+            owner_id=current_user.id,
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
