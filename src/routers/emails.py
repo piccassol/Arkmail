@@ -1,9 +1,26 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException, status
+from sqlalchemy.orm import Session
+from typing import List
+
+# Import your schemas (singular: email)
+from src.schemas.email import EmailCreate, EmailResponse
+
+# Import your database models (singular: email)
+from src.models.email import Email
+
+# Import database session
+from src.database import get_db
+
+# Import user model and authentication dependencies
+from src.models.user import User
+from src.dependencies.auth import get_current_active_user
+
+# Import your CRUD functions
+from src.crud.email import create_email, send_email_from_db
 
 router = APIRouter()
 
-@router.post("/", response_model=EmailResponse)
-@router.post("/", response_model=EmailResponse)
+@router.post("/", response_model=EmailResponse, status_code=status.HTTP_201_CREATED)
 async def send_email(
     email: EmailCreate, 
     background_tasks: BackgroundTasks,
