@@ -1,4 +1,8 @@
+from fastapi import APIRouter
 
+router = APIRouter()
+
+@router.post("/", response_model=EmailResponse)
 @router.post("/", response_model=EmailResponse)
 async def send_email(
     email: EmailCreate, 
