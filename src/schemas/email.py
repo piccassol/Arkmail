@@ -16,4 +16,4 @@ class EmailResponse(EmailBase):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True  # ✅ Fixed for Pydantic V2
