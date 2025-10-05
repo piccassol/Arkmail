@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: arkmail-api
+    runtime: python
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        value: postgresql://arkmail_user:WhuxgBXPTlpLjysj1J0TiZTvo7GbeZfC@dpg-d3e57a33fgac73fqqpp0-a.oregon-postgres.render.com/arkmail
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://mail.arktechnologies.ai
+      - key: ENVIRONMENT
+        value: production
+      - key: RESEND_API_KEY
+        sync: false
