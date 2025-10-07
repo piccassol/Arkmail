@@ -1,48 +1,12 @@
-<<<<<<< HEAD
 fastapi==0.115.11
 uvicorn==0.34.0
 python-dotenv==1.0.1
-requests==2.32.5
-pandas==2.2.2
-schedule==1.2.0
-ollama==0.1.9
+sqlalchemy==2.0.43
+psycopg2-binary==2.9.10
+python-jose==3.5.0
+passlib==1.7.4
 pydantic==2.10.6
 pydantic-settings==2.10.1
 python-multipart==0.0.20
 email-validator==2.3.0
-python-jose==3.5.0
-passlib==1.7.4
-sqlalchemy==2.0.43
-psycopg2-binary==2.9.10
-pywin32==306
 resend==0.8.0
-=======
-# FastAPI Framework
-fastapi==0.110.0
-uvicorn[standard]==0.27.0
-python-multipart==0.0.9
-
-# Database
-sqlalchemy==2.0.27
-psycopg2-binary==2.9.9
-alembic==1.13.1
-
-# Authentication & Security
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-bcrypt==4.1.2
-python-dotenv==1.0.1
-
-# Pydantic Settings (Updated to avoid Rust compilation)
-pydantic==2.6.3
-pydantic-settings==2.2.1
-
-# Email Provider - Resend
-resend==0.8.0
-
-# Date/Time
-python-dateutil==2.9.0
-
-# Optional: Monitoring & Logging
-python-json-logger==2.0.7
->>>>>>> 05ea3ba5f301aed8990aae77d63a9ce48afbdbe1
