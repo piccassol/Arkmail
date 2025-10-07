@@ -1,19 +1,41 @@
-from pydantic import BaseModel
-from typing import List, Optional
+from pydantic import BaseModel, EmailStr
+from typing import Optional
 from datetime import datetime
 
 class EmailBase(BaseModel):
     subject: str
     body: str
 
+
 class EmailCreate(EmailBase):
-    recipient_ids: List[int]
+    recipient: EmailStr
+    is_draft: Optional[bool] = False
+
+
+class EmailUpdate(BaseModel):
+    subject: Optional[str] = None
+    body: Optional[str] = None
+    is_archived: Optional[bool] = None
+    is_deleted: Optional[bool] = None
+
 
 class EmailResponse(EmailBase):
     id: int
     sender_id: int
+    recipient: str
     is_sent: bool
+    is_draft: bool
+    is_archived: bool
+    is_deleted: bool
     created_at: datetime
+    updated_at: Optional[datetime] = None
 
     class Config:
-        from_attributes = True  # ✅ Fixed for Pydantic V2
+        from_attributes = True
+
+
+class EmailListResponse(BaseModel):
+    emails: list[EmailResponse]
+    total: int
+    page: int
+    page_size: int
