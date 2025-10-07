@@ -1,4 +1,4 @@
-﻿from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import os
@@ -9,13 +9,13 @@ from src.routers import auth, emails, newsletters, analytics
 
 # Create database tables
 user.Base.metadata.create_all(bind=engine)
-email.Base.metadata.create_all(bind=engine)
+email.Base.metadata.create_all(bind=engine)  # Create emails table
 newsletter.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
     title="ArkMail - ARK Technologies Email Platform",
     version="2.0.0",
-    description="Email management and newsletter platform"
+    description="Email management and newsletter platform with Resend integration"
 )
 
 # CORS Configuration
@@ -23,6 +23,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://mail.arktechnologies.ai",
+        "https://arktechnologies.ai",
         "http://localhost:3000",
         "http://localhost:8080",
     ],
@@ -37,7 +38,8 @@ async def root():
     return {
         "message": "ArkMail API - ARK Technologies",
         "version": "2.0.0",
-        "status": "operational"
+        "status": "operational",
+        "features": ["authentication", "email", "newsletters", "analytics"]
     }
 
 @app.get("/health")
@@ -58,7 +60,7 @@ async def health_check(db: Session = Depends(get_db)):
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(emails.router, prefix="/api/emails", tags=["Emails"])
+app.include_router(emails.router, prefix="/api/emails", tags=["Emails"])  # Email router
 app.include_router(newsletters.router, prefix="/api/newsletters", tags=["Newsletters"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 
