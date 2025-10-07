@@ -6,7 +6,7 @@ This repository contains an automated AI agent integrated with Mailchimp, design
 
 Step 1: Clone Repository and Setup
 
-git clone https://github.com/piccassol/email_agent.git
+git clone https://github.com/piccassol/arkmail.git
 cd email_agent
 python -m venv venv
 source venv/bin/activate
@@ -15,11 +15,6 @@ pip install -r requirements.txt
 Step 2: Configure Environment
 
 Create a .env file based on .env.example and populate with your API keys:
-
-OPENAI_API_KEY=your_openai_api_key
-MAILCHIMP_API_KEY=your_mailchimp_api_key
-MAILCHIMP_SERVER_PREFIX=usX
-MAILCHIMP_LIST_ID=your_mailchimp_list_id
 
 Step 3: Run the FastAPI Backend
 
@@ -32,7 +27,7 @@ Project Structure
 email_agent/
 ├── src/
 │   ├── main.py       # FastAPI application
-│   └── utils.py      # AI and Mailchimp utilities
+│   └── utils.py      # AI and LLM utilities
 ├── venv/             # Python virtual environment
 ├── .env              # Environment variables (excluded from Git)
 ├── .gitignore
@@ -53,9 +48,7 @@ Tech Stack
 
 Backend: FastAPI
 
-AI: OpenAI (GPT-4-turbo)
-
-Email Automation: Mailchimp
+Email Automation: Custom workflows
 
 Git Workflow
 
@@ -63,7 +56,6 @@ Git Workflow
 
 Automated email generation via AI
 
-Mailchimp integration for newsletter automation
 
 FastAPI backend for scalability
 
