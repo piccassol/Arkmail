@@ -9,9 +9,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-from src.database import engine, get_db
-from src.models import user, email, newsletter
-from src.routers import auth, emails, newsletters, analytics
+from database import engine, get_db
+from models import user, email, newsletter
+from routers import auth, emails, newsletters, analytics
 
 # Create database tables
 user.Base.metadata.create_all(bind=engine)
