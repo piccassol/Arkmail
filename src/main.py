@@ -9,9 +9,10 @@ from src.routers import auth, emails, newsletters, analytics
 
 # Create database tables
 user.Base.metadata.create_all(bind=engine)
-email.Base.metadata.create_all(bind=engine)  # Create emails table
+email.Base.metadata.create_all(bind=engine)
 newsletter.Base.metadata.create_all(bind=engine)
 
+# Create FastAPI app instance
 app = FastAPI(
     title="ArkMail - ARK Technologies Email Platform",
     version="2.0.0",
@@ -60,7 +61,7 @@ async def health_check(db: Session = Depends(get_db)):
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
-app.include_router(emails.router, prefix="/api/emails", tags=["Emails"])  # Email router
+app.include_router(emails.router, prefix="/api/emails", tags=["Emails"])
 app.include_router(newsletters.router, prefix="/api/newsletters", tags=["Newsletters"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
 
