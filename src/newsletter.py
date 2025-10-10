@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from .database import get_db
-from .models.newsletter import Newsletter, NewsletterIssue
-from .schemas.newsletter import NewsletterCreate, NewsletterIssueCreate
-from .utils.auth import get_current_active_user
-from .services.newsletter_service import create_newsletter, create_newsletter_issue, send_newsletter_issue
-from .models.user import User
+from database import get_db
+from models.newsletter import Newsletter, NewsletterIssue
+from schemas.newsletter import NewsletterCreate, NewsletterIssueCreate
+from utils.auth import get_current_active_user
+from services.newsletter_service import create_newsletter, create_newsletter_issue, send_newsletter_issue
+from models.user import User
 
 router = APIRouter(
     prefix="/newsletters",
