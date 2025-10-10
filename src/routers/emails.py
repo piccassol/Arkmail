@@ -2,13 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session
 from typing import List
 
-from src.schemas.email import EmailCreate, EmailResponse, EmailUpdate
-from src.models.email import Email
-from src.database import get_db
-from src.models.user import User
-from src.utils.auth import get_current_active_user
-from src.services.email_service import (
-    send_email_via_resend,
+from schemas.email import EmailCreate, EmailResponse, EmailUpdate
+from models.email import Email
+from database import get_db
+from models.user import User
+from utils.auth import get_current_active_user
+from email_via_resend,
     get_user_inbox,
     get_user_sent_emails,
     get_user_drafts,

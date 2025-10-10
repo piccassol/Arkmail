@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
-from ..models.newsletter import Newsletter
-from ..models.user import User
-from ..schemas.newsletter import NewsletterCreate
+from models.newsletter import Newsletter
+from models.user import User
+from schemas.newsletter import NewsletterCreate
 from datetime import datetime
 
 def create_newsletter(db: Session, name: str, owner_id: int, description: str):

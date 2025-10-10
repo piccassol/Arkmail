@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from src.models.email import Email
-from src.models.user import User
+from models.email import Email
+from models.user import User
 
 def create_email(db: Session, sender_id: int, recipient_ids: list, subject: str, body: str):
     db_email = Email(

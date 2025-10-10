@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from src.database import get_db
-from src.schemas.newsletter import NewsletterCreate, NewsletterResponse
-from src.models.user import User
-from src.services.newsletter_service import send_newsletter
-from src.utils.auth import get_current_user
+from database import get_db
+from schemas.newsletter import NewsletterCreate, NewsletterResponse
+from models.user import User
+from services.newsletter_service import send_newsletter
+from utils.auth import get_current_user
 
 router = APIRouter(
     prefix="/newsletters",
