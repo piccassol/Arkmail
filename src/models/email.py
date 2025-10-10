@@ -12,7 +12,7 @@ class Email(Base):
     recipient = Column(String(255), nullable=False)
     
     # Foreign key to existing users table
-    sender_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    sender_id = Column(String, ForeignKey("User.id"), nullable=False) 
     
     # Status flags
     is_sent = Column(Boolean, default=False)

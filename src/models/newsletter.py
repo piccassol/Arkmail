@@ -7,9 +7,9 @@ class Newsletter(Base):
     __tablename__ = "newsletters"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String)  # Changed from 'name'
-    content = Column(Text)  # Changed from 'description'
-    owner_id = Column(Integer, ForeignKey("users.id"))
+    title = Column(String)
+    content = Column(Text)
+    owner_id = Column(String, ForeignKey("User.id")) 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
     owner = relationship("User", back_populates="owned_newsletters")
