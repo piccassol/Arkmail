@@ -7,10 +7,10 @@ from database import engine, get_db
 from models import user, email, newsletter
 from routers import auth, emails, newsletters, analytics
 
-# Create database tables
-user.Base.metadata.create_all(bind=engine)
-email.Base.metadata.create_all(bind=engine)
-newsletter.Base.metadata.create_all(bind=engine)
+# TEMPORARILY COMMENT OUT TABLE CREATION
+# user.Base.metadata.create_all(bind=engine)
+# email.Base.metadata.create_all(bind=engine)
+# newsletter.Base.metadata.create_all(bind=engine)
 
 # Create FastAPI app instance
 app = FastAPI(
