@@ -16,7 +16,6 @@ from email_via_resend,
     get_email_by_id,
     update_email,
     delete_email_permanently
-)
 
 router = APIRouter()
 
