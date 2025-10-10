@@ -4,7 +4,7 @@ from database import get_db
 from schemas.newsletter import NewsletterCreate, NewsletterResponse
 from models.user import User
 from services.newsletter_service import send_newsletter
-from utils.auth import get_current_user
+from utils.auth import get_current_active_user
 
 router = APIRouter(
     prefix="/newsletters",
@@ -16,7 +16,7 @@ router = APIRouter(
 def send_newsletter_route(
     newsletter: NewsletterCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_active_user)
 ):
     """
     Send a newsletter using Mailchimp and log it in the database.

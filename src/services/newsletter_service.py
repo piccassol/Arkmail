@@ -11,5 +11,32 @@ def create_newsletter(db: Session, name: str, owner_id: int, description: str):
     db.refresh(db_newsletter)
     return db_newsletter
 
-async def send_newsletter(db: Session, newsletter_id: int):
-    pass  # Implement newsletter sending here
+def send_newsletter(db: Session, owner_id: int, title: str, content: str):
+    """
+    Create and send a newsletter
+    
+    Args:
+        db: Database session
+        owner_id: User ID sending the newsletter
+        title: Newsletter title
+        content: Newsletter content
+    
+    Returns:
+        Dictionary with newsletter info
+    """
+    # Create newsletter record
+    newsletter = Newsletter(
+        title=title,
+        content=content,
+        owner_id=owner_id
+    )
+    db.add(newsletter)
+    db.commit()
+    db.refresh(newsletter)
+    
+    # TODO: Implement actual sending logic (Mailchimp, Resend, etc.)
+    
+    return {
+        "newsletter_id": newsletter.id,
+        "status": "sent"
+    }

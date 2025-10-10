@@ -7,7 +7,8 @@ from models.email import Email
 from database import get_db
 from models.user import User
 from utils.auth import get_current_active_user
-from email_via_resend,
+from services.email_service import (
+    send_email_via_resend,
     get_user_inbox,
     get_user_sent_emails,
     get_user_drafts,
@@ -16,6 +17,7 @@ from email_via_resend,
     get_email_by_id,
     update_email,
     delete_email_permanently
+)
 
 router = APIRouter()
 

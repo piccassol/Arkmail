@@ -1,8 +1,8 @@
 import os
 import resend
 from sqlalchemy.orm import Session
-from src.models.email import Email
-from src.models.user import User
+from models.email import Email
+from models.user import User
 
 # Initialize Resend with API key from environment
 resend.api_key = os.getenv("RESEND_API_KEY", "")
