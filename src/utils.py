@@ -23,7 +23,7 @@ def generate_email(prompt: str) -> str:
         response = requests.post(
             "http://localhost:11434/api/chat",
             json={
-                "model": "gpt-20-oss",  # Replace with actual model name if different (e.g., 'llama3')
+                "model": "llama3.1:8b", 
                 "messages": [
                     {"role": "system", "content": "You are a professional email assistant."},
                     {"role": "user", "content": prompt}

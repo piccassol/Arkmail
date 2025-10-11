@@ -19,7 +19,7 @@ app = FastAPI(
     description="Email management and newsletter platform with Resend integration"
 )
 
-# CORS Configuration
+# CORS Configuration - IMPORTANT: Must be configured before routes
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -27,10 +27,13 @@ app.add_middleware(
         "https://arktechnologies.ai",
         "http://localhost:3000",
         "http://localhost:8080",
+        "http://localhost:3001",  # Added extra localhost port
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["*"],  # Added this
+    max_age=3600,  # Added this for preflight caching
 )
 
 # Health check endpoints
