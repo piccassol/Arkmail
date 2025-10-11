@@ -19,9 +19,10 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(db: Session, username: str, password: str):
-    user = db.query(User).filter(User.username == username).first()
-    if not user or not verify_password(password, user.hashed_password):
+def authenticate_user(db: Session, email: str, password: str):
+    # Changed: User.username -> User.email, username parameter -> email parameter
+    user = db.query(User).filter(User.email == email).first()
+    if not user or not verify_password(password, user.hashedPassword):
         return False
     return user
 
@@ -45,12 +46,13 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    user = db.query(User).filter(User.username == token_data.username).first()
+    # Changed: User.username -> User.email
+    user = db.query(User).filter(User.email == token_data.username).first()
     if user is None:
         raise credentials_exception
     return user
 
 async def get_current_active_user(current_user: User = Depends(get_current_user)):
-    if not current_user.is_active:
-        raise HTTPException(status_code=400, detail="Inactive user")
+    # Note: Your User model doesn't have 'is_active' field, so this will need adjustment too
+    # For now, just return the user without checking is_active
     return current_user
