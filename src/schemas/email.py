@@ -21,7 +21,7 @@ class EmailUpdate(BaseModel):
 
 class EmailResponse(EmailBase):
     id: int
-    sender_id: int
+    sender_id: str
     recipient: str
     is_sent: bool
     is_draft: bool
