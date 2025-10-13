@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from pydantic import BaseModel
 from database import get_db
 from models.user import User
 from schemas.user import UserCreate, Token
@@ -8,6 +9,12 @@ from utils.auth import create_access_token, get_password_hash, verify_password
 import uuid
 
 router = APIRouter(tags=["authentication"])
+
+# Add this class for Google Auth
+class GoogleAuthRequest(BaseModel):
+    email: str
+    name: str
+    google_id: str
 
 @router.post("/token", response_model=Token)
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -46,9 +53,7 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
 
 @router.post("/google-auth", response_model=Token)
 async def google_auth(
-    email: str,
-    name: str,
-    google_id: str,
+    request: GoogleAuthRequest,
     db: Session = Depends(get_db)
 ):
     """
@@ -56,15 +61,15 @@ async def google_auth(
     Creates user if doesn't exist, returns JWT token
     """
     # Check if user exists
-    user = db.query(User).filter(User.email == email).first()
+    user = db.query(User).filter(User.email == request.email).first()
     
     if not user:
         # Create new user for Google OAuth
-        hashed_password = get_password_hash(google_id)  # Use google_id as password hash
+        hashed_password = get_password_hash(request.google_id)
         user = User(
             id=str(uuid.uuid4()),
-            email=email,
-            name=name,
+            email=request.email,
+            name=request.name,
             hashedPassword=hashed_password
         )
         db.add(user)
