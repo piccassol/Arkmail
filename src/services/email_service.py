@@ -18,9 +18,6 @@ logger.info(f"🔑 RESEND_API_KEY length: {len(resend.api_key) if resend.api_key
 if resend.api_key:
     logger.info(f"🔑 RESEND_API_KEY starts with: {resend.api_key[:7]}...")
 
-# Initialize Resend with API key from environment
-resend.api_key = os.getenv("RESEND_API_KEY", "")
-
 
 class EmailProvider:
     """Base provider interface for future flexibility"""
@@ -35,34 +32,34 @@ class ResendProvider(EmailProvider):
         if not resend.api_key:
             raise ValueError("RESEND_API_KEY not set in environment variables")
 
-   def send(self, from_email: str, to: str, subject: str, body: str):
-    """Send email via Resend API"""
-    try:
-        params = {
-            "from": from_email,
-            "to": [to],
-            "subject": subject,
-            "html": body,
-        }
-        
-        logger.info(f"📧 Attempting to send email:")
-        logger.info(f"  From: {from_email}")
-        logger.info(f"  To: {to}")
-        logger.info(f"  Subject: {subject}")
-        logger.info(f"  API Key set: {bool(resend.api_key)}")
-        
-        email = resend.Emails.send(params)
-        
-        logger.info(f"✅ Resend response: {email}")
-        
-        return {
-            "success": True,
-            "email_id": email.get("id"),
-            "status": "sent"
-        }
-    except Exception as e:
-        logger.error(f"❌ Resend send failed: {str(e)}")
-        raise RuntimeError(f"Resend send failed: {str(e)}")
+    def send(self, from_email: str, to: str, subject: str, body: str):
+        """Send email via Resend API"""
+        try:
+            params = {
+                "from": from_email,
+                "to": [to],
+                "subject": subject,
+                "html": body,
+            }
+            
+            logger.info(f"📧 Attempting to send email:")
+            logger.info(f"  From: {from_email}")
+            logger.info(f"  To: {to}")
+            logger.info(f"  Subject: {subject}")
+            logger.info(f"  API Key set: {bool(resend.api_key)}")
+            
+            email = resend.Emails.send(params)
+            
+            logger.info(f"✅ Resend response: {email}")
+            
+            return {
+                "success": True,
+                "email_id": email.get("id"),
+                "status": "sent"
+            }
+        except Exception as e:
+            logger.error(f"❌ Resend send failed: {str(e)}")
+            raise RuntimeError(f"Resend send failed: {str(e)}")
 
 
 def send_email_via_resend(
@@ -87,11 +84,7 @@ def send_email_via_resend(
     """
     
     # Construct from email using verified domain
-    # Option 1: Use your verified domain (after domain verification)
     from_email = f"{sender.email.split('@')[0]} <noreply@arktechnologies.ai>"
-    
-    # Option 2: Use Resend's test domain (for quick testing)
-    # from_email = "onboarding@resend.dev"
     
     # Send via Resend
     provider = ResendProvider()
@@ -119,19 +112,7 @@ def send_email_via_resend(
 
 
 def get_user_inbox(db: Session, user_id: int, user_email: str, skip: int = 0, limit: int = 50):
-    """
-    Get emails received by user
-    
-    Args:
-        db: Database session
-        user_id: Current user's ID
-        user_email: Current user's email
-        skip: Pagination offset
-        limit: Pagination limit
-    
-    Returns:
-        List of Email objects
-    """
+    """Get emails received by user"""
     return db.query(Email).filter(
         Email.recipient == user_email,
         Email.is_deleted == False
@@ -174,21 +155,9 @@ def get_user_trash(db: Session, user_id: int, skip: int = 0, limit: int = 50):
 
 
 def get_email_by_id(db: Session, email_id: int, user_id: int, user_email: str):
-    """
-    Get specific email if user has access
-    
-    Args:
-        db: Database session
-        email_id: Email ID to fetch
-        user_id: Current user's ID
-        user_email: Current user's email
-    
-    Returns:
-        Email object or None
-    """
+    """Get specific email if user has access"""
     email = db.query(Email).filter(Email.id == email_id).first()
     
-    # Check if user is sender or recipient
     if email and (email.sender_id == user_id or email.recipient == user_email):
         return email
     
@@ -196,7 +165,7 @@ def get_email_by_id(db: Session, email_id: int, user_id: int, user_email: str):
 
 
 def update_email(db: Session, email_id: int, user_id: int, update_data: dict):
-    """Update email properties (archive, delete, etc.)"""
+    """Update email properties"""
     email = db.query(Email).filter(
         Email.id == email_id,
         Email.sender_id == user_id
