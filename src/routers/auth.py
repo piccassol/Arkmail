@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database import get_db
 from models.user import User
-from schemas.user import UserCreate, Token
+from schemas.user import UserCreate, Token, GoogleAuthRequest
 from utils.auth import create_access_token, get_password_hash, verify_password
 import uuid
 
@@ -43,3 +43,35 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
     return {"email": new_user.email, "name": new_user.name}
+
+@router.post("/google-auth", response_model=Token)
+async def google_auth(
+    email: str,
+    name: str,
+    google_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    Authenticate or register a user via Google OAuth
+    Creates user if doesn't exist, returns JWT token
+    """
+    # Check if user exists
+    user = db.query(User).filter(User.email == email).first()
+    
+    if not user:
+        # Create new user for Google OAuth
+        hashed_password = get_password_hash(google_id)  # Use google_id as password hash
+        user = User(
+            id=str(uuid.uuid4()),
+            email=email,
+            name=name,
+            hashedPassword=hashed_password
+        )
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+    
+    # Generate access token
+    access_token = create_access_token(data={"sub": user.email})
+    
+    return {"access_token": access_token, "token_type": "bearer"}
