@@ -35,24 +35,34 @@ class ResendProvider(EmailProvider):
         if not resend.api_key:
             raise ValueError("RESEND_API_KEY not set in environment variables")
 
-    def send(self, from_email: str, to: str, subject: str, body: str):
-        """Send email via Resend API"""
-        try:
-            params = {
-                "from": from_email,
-                "to": [to],
-                "subject": subject,
-                "html": body,
-            }
-            
-            email = resend.Emails.send(params)
-            return {
-                "success": True,
-                "email_id": email.get("id"),
-                "status": "sent"
-            }
-        except Exception as e:
-            raise RuntimeError(f"Resend send failed: {str(e)}")
+   def send(self, from_email: str, to: str, subject: str, body: str):
+    """Send email via Resend API"""
+    try:
+        params = {
+            "from": from_email,
+            "to": [to],
+            "subject": subject,
+            "html": body,
+        }
+        
+        logger.info(f"📧 Attempting to send email:")
+        logger.info(f"  From: {from_email}")
+        logger.info(f"  To: {to}")
+        logger.info(f"  Subject: {subject}")
+        logger.info(f"  API Key set: {bool(resend.api_key)}")
+        
+        email = resend.Emails.send(params)
+        
+        logger.info(f"✅ Resend response: {email}")
+        
+        return {
+            "success": True,
+            "email_id": email.get("id"),
+            "status": "sent"
+        }
+    except Exception as e:
+        logger.error(f"❌ Resend send failed: {str(e)}")
+        raise RuntimeError(f"Resend send failed: {str(e)}")
 
 
 def send_email_via_resend(
