@@ -1,8 +1,22 @@
 import os
 import resend
+import logging
 from sqlalchemy.orm import Session
 from models.email import Email
 from models.user import User
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize Resend with API key from environment
+resend.api_key = os.getenv("RESEND_API_KEY", "")
+
+# Debug logging
+logger.info(f"🔑 RESEND_API_KEY present: {bool(resend.api_key)}")
+logger.info(f"🔑 RESEND_API_KEY length: {len(resend.api_key) if resend.api_key else 0}")
+if resend.api_key:
+    logger.info(f"🔑 RESEND_API_KEY starts with: {resend.api_key[:7]}...")
 
 # Initialize Resend with API key from environment
 resend.api_key = os.getenv("RESEND_API_KEY", "")
