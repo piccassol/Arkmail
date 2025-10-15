@@ -5,7 +5,7 @@ import os
 
 from database import engine, get_db
 from models import user, email, newsletter
-from routers import auth, emails, newsletters, analytics
+from routers import auth, emails, newsletters, analytics, calendar
 
 # TEMPORARILY COMMENT OUT TABLE CREATION
 # user.Base.metadata.create_all(bind=engine)
@@ -67,7 +67,7 @@ async def root():
         "message": "ArkMail API - ARK Technologies",
         "version": "2.0.0",
         "status": "operational",
-        "features": ["authentication", "email", "newsletters", "analytics"]
+        "features": ["authentication", "email", "newsletters", "analytics", "calendar"]
     }
 
 @app.get("/health")
@@ -83,7 +83,8 @@ async def health_check(db: Session = Depends(get_db)):
         "status": "healthy" if db_status == "connected" else "degraded",
         "service": "arkmail",
         "environment": os.getenv("ENVIRONMENT", "development"),
-        "database": db_status
+        "database": db_status,
+        "calendar_verification": os.getenv("GOOGLE_CALENDAR_VERIFICATION_PENDING", "false")
     }
 
 # Add OPTIONS handler for CORS preflight requests
@@ -96,6 +97,7 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(emails.router, prefix="/api/emails", tags=["Emails"])
 app.include_router(newsletters.router, prefix="/api/newsletters", tags=["Newsletters"])
 app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(calendar.router, prefix="/api", tags=["Calendar"])  # Calendar endpoints
 
 # Legacy endpoint for backward compatibility
 @app.post("/api/v1/generate-email")
@@ -116,7 +118,7 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(
-        "src.main:app", 
+        "src.main:app",
         host="0.0.0.0",
         port=port,
         reload=os.getenv("ENVIRONMENT") != "production"
