@@ -19,21 +19,45 @@ app = FastAPI(
     description="Email management and newsletter platform with Resend integration"
 )
 
-# CORS Configuration - IMPORTANT: Must be configured before routes
+# CORS Configuration - CRITICAL: Must be configured before routes
+# This allows your frontend to communicate with the backend API
+origins = [
+    "https://mail.arktechnologies.ai",
+    "https://arktechnologies.ai",
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:8080",
+]
+
+# Add wildcard for development if needed (remove in production)
+if os.getenv("ENVIRONMENT") == "development":
+    origins.append("http://localhost:*")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://mail.arktechnologies.ai",
-        "https://arktechnologies.ai",
-        "http://localhost:3000",
-        "http://localhost:8080",
-        "http://localhost:3001",  # Added extra localhost port
-    ],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"],  # Added this
-    max_age=3600,  # Added this for preflight caching
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=[
+        "Content-Type",
+        "Authorization",
+        "Accept",
+        "Origin",
+        "User-Agent",
+        "DNT",
+        "Cache-Control",
+        "X-Requested-With",
+        "If-Modified-Since",
+        "Keep-Alive",
+        "X-Custom-Header",
+    ],
+    expose_headers=[
+        "Content-Length",
+        "Content-Type",
+        "X-Total-Count",
+        "X-Page-Count",
+    ],
+    max_age=86400,  # 24 hours cache for preflight requests
 )
 
 # Health check endpoints
@@ -53,14 +77,19 @@ async def health_check(db: Session = Depends(get_db)):
         db.execute("SELECT 1")
         db_status = "connected"
     except Exception as e:
-        db_status = "disconnected"
+        db_status = f"disconnected: {str(e)}"
         
     return {
-        "status": "healthy",
+        "status": "healthy" if db_status == "connected" else "degraded",
         "service": "arkmail",
         "environment": os.getenv("ENVIRONMENT", "development"),
         "database": db_status
     }
+
+# Add OPTIONS handler for CORS preflight requests
+@app.options("/{rest_of_path:path}")
+async def preflight_handler(rest_of_path: str):
+    return {"message": "OK"}
 
 # Include routers
 app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
@@ -87,7 +116,7 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(
-        "src.main:app",
+        "main:app",  # Fixed: Changed from "src.main:app" to "main:app"
         host="0.0.0.0",
         port=port,
         reload=os.getenv("ENVIRONMENT") != "production"
