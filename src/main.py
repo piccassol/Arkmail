@@ -116,7 +116,7 @@ if __name__ == "__main__":
     import uvicorn
     port = int(os.getenv("PORT", 8000))
     uvicorn.run(
-        "main:app",  # Fixed: Changed from "src.main:app" to "main:app"
+        "src.main:app", 
         host="0.0.0.0",
         port=port,
         reload=os.getenv("ENVIRONMENT") != "production"
